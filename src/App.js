@@ -4,11 +4,14 @@ import shortId from 'shortid'
 function App() {
 	const [task, setTask] = useState('')
 	const [taskList, setTaskList] = useState([])
+	const [editMode, setEditMode] = useState(false)
+	const [id, setId] = useState('')
 
 	const addTask = (e) => {
 		e.preventDefault()
 		if (!task.trim()) {
 			console.log('Elemento vacio')
+			return
 		}
 		console.log(task)
 		setTaskList([...taskList, { id: shortId.generate(), description: task }])
@@ -19,6 +22,28 @@ function App() {
 		//console.log(id)
 		const filteredTasks = taskList.filter((task) => task.id !== id)
 		setTaskList(filteredTasks)
+	}
+
+	const enterEditMode = (task) => {
+		console.log(task)
+		setEditMode(true)
+		setTask(task.description)
+		setId(task.id)
+	}
+
+	const editTask = (e) => {
+		e.preventDefault()
+		if (!task.trim()) {
+			console.log('Elemento vacio')
+			return
+		}
+		const editedTasks = taskList.map((item) =>
+			item.id === id ? { id, description: task } : item
+		)
+		setTaskList(editedTasks)
+		setEditMode(false)
+		setTask('')
+		setId('')
 	}
 
 	return (
@@ -38,7 +63,10 @@ function App() {
 								>
 									Eliminar
 								</button>
-								<button className="btn btn-warning btn-sm float-right mx-2">
+								<button
+									onClick={() => enterEditMode(task)}
+									className="btn btn-warning btn-sm float-right mx-2"
+								>
 									Editar
 								</button>
 							</li>
@@ -46,8 +74,10 @@ function App() {
 					</ul>
 				</div>
 				<div className="col-4">
-					<h4 className="text-center">Formulario</h4>
-					<form onSubmit={addTask}>
+					<h4 className="text-center">
+						{editMode ? 'Editar tarea' : 'Agregar tarea'}
+					</h4>
+					<form onSubmit={editMode ? editTask : addTask}>
 						<input
 							type="text"
 							className="form-control mb-2"
@@ -55,9 +85,16 @@ function App() {
 							onChange={(e) => setTask(e.target.value)}
 							value={task}
 						/>
-						<button className="btn btn-dark btn-block" type="submit">
-							Agregar
-						</button>
+
+						{editMode ? (
+							<button className="btn btn-warning btn-block" type="submit">
+								Editar
+							</button>
+						) : (
+							<button className="btn btn-dark btn-block" type="submit">
+								Agregar
+							</button>
+						)}
 					</form>
 				</div>
 			</div>

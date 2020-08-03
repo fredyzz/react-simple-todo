@@ -6,20 +6,21 @@ function App() {
 	const [taskList, setTaskList] = useState([])
 	const [editMode, setEditMode] = useState(false)
 	const [id, setId] = useState('')
+	const [error, setError] = useState(null)
 
 	const addTask = (e) => {
 		e.preventDefault()
 		if (!task.trim()) {
-			console.log('Elemento vacio')
+			setError('Escriba una tarea...')
 			return
 		}
 		console.log(task)
 		setTaskList([...taskList, { id: shortId.generate(), description: task }])
 		setTask('')
+		setError(null)
 	}
 
 	const deleteTask = (id) => {
-		//console.log(id)
 		const filteredTasks = taskList.filter((task) => task.id !== id)
 		setTaskList(filteredTasks)
 	}
@@ -34,7 +35,6 @@ function App() {
 	const editTask = (e) => {
 		e.preventDefault()
 		if (!task.trim()) {
-			console.log('Elemento vacio')
 			return
 		}
 		const editedTasks = taskList.map((item) =>
@@ -44,6 +44,7 @@ function App() {
 		setEditMode(false)
 		setTask('')
 		setId('')
+		setError(null)
 	}
 
 	return (
@@ -54,23 +55,27 @@ function App() {
 				<div className="col-8">
 					<h4 className="text-center">Lista de tareas</h4>
 					<ul className="list-group">
-						{taskList.map((task) => (
-							<li className="list-group-item" key={task.id}>
-								<span className="lead">{task.description}</span>
-								<button
-									onClick={() => deleteTask(task.id)}
-									className="btn btn-danger btn-sm float-right mx-2"
-								>
-									Eliminar
-								</button>
-								<button
-									onClick={() => enterEditMode(task)}
-									className="btn btn-warning btn-sm float-right mx-2"
-								>
-									Editar
-								</button>
-							</li>
-						))}
+						{taskList.length === 0 ? (
+							<li className="list-group-item">No hay tareas</li>
+						) : (
+							taskList.map((task) => (
+								<li className="list-group-item" key={task.id}>
+									<span className="lead">{task.description}</span>
+									<button
+										onClick={() => deleteTask(task.id)}
+										className="btn btn-danger btn-sm float-right mx-2"
+									>
+										Eliminar
+									</button>
+									<button
+										onClick={() => enterEditMode(task)}
+										className="btn btn-warning btn-sm float-right mx-2"
+									>
+										Editar
+									</button>
+								</li>
+							))
+						)}
 					</ul>
 				</div>
 				<div className="col-4">
@@ -78,6 +83,7 @@ function App() {
 						{editMode ? 'Editar tarea' : 'Agregar tarea'}
 					</h4>
 					<form onSubmit={editMode ? editTask : addTask}>
+						{error && <span className="text-danger">{error}</span>}
 						<input
 							type="text"
 							className="form-control mb-2"

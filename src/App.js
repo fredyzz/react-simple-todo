@@ -35,6 +35,7 @@ function App() {
 	const editTask = (e) => {
 		e.preventDefault()
 		if (!task.trim()) {
+			setError('Escriba una tarea...')
 			return
 		}
 		const editedTasks = taskList.map((item) =>

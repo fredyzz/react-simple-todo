@@ -5,6 +5,8 @@
 - Create-react-app
 - Hooks
 
+[live-demo](https://fredyzz.github.io/react-simple-todo/)
+
 ## Available Scripts
 
 In the project directory, you can run:
